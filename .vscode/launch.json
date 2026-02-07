@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch ContextManagementApp w args",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/ContextManagementApp/bin/Debug/net10.0/ContextManagementApp.dll",
+            "args": ["--demo"],
+            "cwd": "${workspaceFolder}/ContextManagementApp",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        }
+    ]
+}
