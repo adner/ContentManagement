@@ -39,6 +39,20 @@ dotnet run --project ContextManagementApp/ContextManagementApp.csproj -- --demo 
 
 Reducer aliases: `dummy`, `counting`, `toolpreserving`, `contentaware`.
 
+## AgentFrameworkToolkit
+
+This project is built on [AgentFrameworkToolkit](https://github.com/rwjdk/AgentFrameworkToolkit), an opinionated C# toolkit that sits on top of Microsoft Agent Framework.
+
+Microsoft Agent Framework gives you the plumbing for building LLM agents in .NET — chat clients, tool calling, chat history — but leaves a lot of wiring up to you. AgentFrameworkToolkit wraps this with provider-specific factories (`OpenAIAgentFactory`, `AnthropicAgentFactory`, etc.) that make the common path short. Creating an agent with tools, a specific model, reasoning effort, and a chat history provider is a single `CreateAgent(new AgentOptions { ... })` call instead of manually assembling chat clients, configuring tool bindings, and stitching together middleware.
+
+The parts that matter for this project:
+
+- **`AgentOptions.ChatHistoryProviderFactory`** — this is the hook where the `IChatReducer` plugs in. The toolkit's `InMemoryChatHistoryProvider` stores the full history and applies the reducer at read-time, so the reducer only affects what the LLM sees, not what's stored.
+- **`AgentOptions.ClientFactory`** — lets you wrap the underlying `IChatClient` with middleware (like our `MessageLoggingChatClient` that logs what gets sent to the LLM after reduction).
+- **`AgentOptions.Tools`** — accepts tools from any source, including MCP servers. No ceremony beyond passing the list.
+
+Without it, wiring up the same agent with chat history reduction, logging middleware, and MCP tools would take significantly more code and a deeper understanding of the Microsoft Agent Framework internals.
+
 ## Stack
 
 - .NET 10, C#
